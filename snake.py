@@ -1,7 +1,9 @@
 import pygame
 import random
-from tkinter import *
 from sys import exit
+
+#početni setup
+
 pygame.init()
 
 screen=pygame.display.set_mode((800,800))
@@ -16,8 +18,13 @@ red=(255,0,0)
 
 clock=pygame.time.Clock()
 
+#kako bi se igram mogla ponavljati s Y/N
+
 a=1
 while a==1:
+
+    #početna točka i duljina zmije, vraćanje scorea na 0, inicijalna pozicija hrane
+    
     movedir=0
 
     x=400
@@ -32,9 +39,12 @@ while a==1:
 
     xfood=(random.randrange(0, 32))*25
     yfood=(random.randrange(0, 32))*25
-
+    
     running=True
     while running:
+
+        #kretanje i izlazak iz igre
+        
         for event in pygame.event.get():
             if event.type==pygame.QUIT:
                 running=False
@@ -49,6 +59,9 @@ while a==1:
                     movedir=3
                 elif event.key==pygame.K_LEFT and prevmovedir!=2:
                     movedir=4
+
+        #provjeravanje je li se zmija zabila u zid
+    
         if x<0 or x>775 or y<0 or y>775:
             print("U died lmao. Ur score is", str(score)+'.', "Retry? [Y/N]")
             e=input()
@@ -62,6 +75,9 @@ while a==1:
             
         curX=x
         curY=y
+
+        #zapravo ovdje se provodi kretanje
+        
         if movedir==1:
             y=y-25
         elif movedir==2:
@@ -71,23 +87,44 @@ while a==1:
         elif movedir==4:
             x=x-25
         prevmovedir=movedir
+
+        #random bojanje ekrana iz nekog razloga
+        
         screen.fill((0, 15, 0))
+
+        #provjera je li zmija pojela hranu
+        
         if x==xfood and y==yfood:
+
+            #regeneracija hrane, while loop je da se ne generira u zmiji
+            
             xfood=(random.randrange(0, 32))*25
             yfood=(random.randrange(0, 32))*25
             while [xfood, yfood]==[x, y] or [xfood, yfood] in trail:
                 xfood=(random.randrange(0, 32))*25
                 yfood=(random.randrange(0, 32))*25
+
+            #produljivanje zmije i povećavanje scorea
+            
             length=length+1
             score=score+1
+
+        #kako mi radi 'rep' zmije je da se sprema svaka točka u kojoj je zmija bila, a ako premaši broj pojedene hrane, smaji se za 1
+        
         trail.append([curX, curY])
         if len(trail)>length:
             del trail[0]
+
+        #crtanje repa i glave zmije
+        
         pygame.draw.rect(screen, green, [curX, curY, 25, 25])
         for i in range(len(trail)):
             pygame.draw.rect(screen, green, [trail[i][0], trail[i][1], 25, 25])
         pygame.draw.rect(screen, red, [xfood, yfood, 25, 25])
         pygame.draw.rect(screen,green,[x,y,25,25])
+
+        #provjera je li se zmija zabila sama u sebe
+    
         h=[x,y]
         if h in trail:
             print("U died lmao. Ur score is", str(score)+'.', "Retry? [Y/N]")
@@ -99,6 +136,9 @@ while a==1:
             break
             running=False
             pygame.quit()
+
+        #score
+
         text = font.render(str(score), True, (200,200,200))
         textRect = text.get_rect()
         textRect.center = (50, 50)
