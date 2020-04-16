@@ -18,7 +18,7 @@ red=(255,0,0)
 
 clock=pygame.time.Clock()
 
-#kako bi se igram mogla ponavljati s Y/N
+#kako bi se igra mogla ponavljati
 
 a=1
 while a==1:
